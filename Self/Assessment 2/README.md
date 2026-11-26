@@ -1,4 +1,4 @@
-# Python Assessment 2 — Study Notes & Practical Programs
+# Python Assessment 2 — Notes & Practical Programs
 
 ## Syllabus (Assessment 2)
 
@@ -15,294 +15,266 @@
 
 ---
 
-## Files in This Folder
+## Program Files
 
 - [`oop_programs.py`](oop_programs.py) — Section 1 (Topics 2.1, 2.2, 2.3)
 - [`modules_packages_asyncio.py`](modules_packages_asyncio.py) — Section 2 (Topics 3.3, 3.4)
-- [`my_module.py`](my_module.py) — User-defined module used in Section 2
-- [`my_pkg/`](my_pkg/) — User-defined regular package (with `__init__.py`)
+- [`calc_pkg/`](calc_pkg/) — User-defined regular package (`__init__.py` + `ops.py`)
 - [`ns_pkg/`](ns_pkg/) — User-defined namespace package (without `__init__.py`)
 - [`exceptions_and_threads.py`](exceptions_and_threads.py) — Section 3 (Topics 6.1, 6.2)
 
 ---
 
-## 1. Object Oriented Programming
+### 2.1 Class, Object, Method Call, and Accessing Class Members
 
-### 2.1 Concept of Class, Object, Method Call, Accessing Class Members Outside the Class
-
-- **Class**: A blueprint or template that defines what data (attributes) and actions (methods) an object will have.
-- **Object**: A real instance created from a class. You can create many objects from one class.
-- **Method**: A function defined inside a class. Its first parameter is `self`, which refers to the current object.
-- **Accessing Members Outside the Class**: You can read or update attributes and call methods using dot notation (`object.attribute` or `object.method()`).
-
-**Example Program** (from `oop_programs.py`):
+* **What is a Class?** Think of a class like a cookie cutter or a form template. If you make a `Student` class, it just says: "Every student has a `name` and `marks`." It does not hold one real student's data by itself.
+* **What is an Object?** An object is one real item made from that template. For example, `s1 = Student("Riya", 85)` creates an actual student object named `s1`.
+* **What is a Method Call?** A method is just a function written inside a class. Calling a method means asking that specific object to do something using a dot, like `s1.show_details()`.
+* **How do you access class members outside the class?** Once you have an object `obj` (or the class name `Student`), you use a dot `.` to read or change variables or call methods outside the class—for example, `s1.name` or `Student.college`.
 
 ```python
 class Student:
-    college = "IMCC"  # Class attribute
+    college = "My College"  # Shared by all Student objects
 
-    def set_info(self, name, roll_no, marks):
-        self.name = name
-        self.roll_no = roll_no
-        self.marks = marks
+    def __init__(self, name, marks):
+        self.name = name    # Stored inside this specific object
+        self.marks = marks  # Stored inside this specific object
 
-    def show_info(self):
-        print("College :", Student.college)
-        print("Name    :", self.name)
-        print("Roll No :", self.roll_no)
-        print("Marks   :", self.marks)
-
-    def check_pass(self):
-        if self.marks >= 40:
-            print(self.name, "-> Pass")
-        else:
-            print(self.name, "-> Fail")
+    def show_details(self):
+        print("Name:", self.name)
+        print("Marks:", self.marks)
 
 
-s1 = Student()
-s2 = Student()
+# Create one object from the Student class
+s1 = Student("Riya", 85)
 
-s1.set_info("Aarav", 101, 75)
-s2.set_info("Diya", 102, 32)
+# Access a variable outside the class using a dot
+print("Outside access - Name:", s1.name)
+print("Outside access - College:", Student.college)
 
-s1.show_info()
-s1.check_pass()
-
-# Accessing and updating members outside the class
-print("College accessed outside class:", Student.college)
-s2.marks = 50
-s2.check_pass()
+# Call a method on the object
+s1.show_details()
 ```
+
+---
 
 ### 2.2 Setter and Getter Methods
 
-- **Getter Method**: A method used to safely read an attribute's value (for example, `get_balance()`).
-- **Setter Method**: A method used to update an attribute's value with validation rules (for example, `set_balance(amount)` rejecting negative numbers).
-- **Why use them?** They protect internal data (often named with a leading underscore like `_balance`) from invalid values.
-
-**Example Program** (from `oop_programs.py`):
+* **What is a Getter method?** A getter is a method that **reads and returns** a variable's value instead of letting outside code grab it directly.
+* **What is a Setter method?** A setter is a method that **updates** a variable's value—usually after checking an `if` condition so bad values (like negative age or negative marks) are blocked.
 
 ```python
-class BankAccount:
-    def __init__(self, owner, balance):
-        self.owner = owner
-        self._balance = 0
-        self.set_balance(balance)
+class Person:
+    def __init__(self, age):
+        self._age = 0       # Start with a safe default
+        self.set_age(age)   # Validate using the setter
 
-    def get_balance(self):
-        return self._balance
+    def get_age(self):
+        return self._age    # Returns the stored age
 
-    def set_balance(self, amount):
-        if amount < 0:
-            print("Invalid amount! Balance cannot be negative.")
+    def set_age(self, new_age):
+        if new_age >= 0:
+            self._age = new_age
+            print("Age set to:", self._age)
         else:
-            self._balance = amount
-
-    def deposit(self, amount):
-        if amount > 0:
-            self.set_balance(self._balance + amount)
-            print("Deposited:", amount)
-        else:
-            print("Deposit must be greater than 0.")
+            print("Age cannot be negative. Keeping:", self._age)
 
 
-acc = BankAccount("Rohan", 1000)
-print("Starting Balance:", acc.get_balance())
-acc.deposit(500)
-acc.set_balance(-200)  # Rejected by setter
-print("Balance:", acc.get_balance())
+p = Person(20)
+print("Current age:", p.get_age())
+
+p.set_age(-5)   # Blocked by if/else
+p.set_age(21)   # Accepted
+print("Final age:", p.get_age())
 ```
+
+---
 
 ### 2.3 Constructor and Destructor
 
-- **Constructor (`__init__`)**: A special method that runs automatically as soon as a new object is created. It sets up initial values.
-- **Destructor (`__del__`)**: A special method that runs automatically when an object is destroyed (via `del obj` or when the program ends).
-
-**Example Program** (from `oop_programs.py`):
+* **What is a Constructor (`__init__`)?** A special method that runs **automatically** the moment you create an object. Its job is to put starting values into the object (`self.name = ...`).
+* **What is a Destructor (`__del__`)?** A special method that runs **automatically** when an object is destroyed or deleted with `del`. It is meant for cleanup messages or releasing resources.
 
 ```python
 class Book:
-    def __init__(self, title, author):
+    def __init__(self, title):
         self.title = title
-        self.author = author
-        print("Constructor called -> Created book:", self.title)
-
-    def display(self):
-        print("Book:", self.title, "| Author:", self.author)
+        print("Constructor ran: Book created ->", self.title)
 
     def __del__(self):
-        print("Destructor called -> Removed book:", self.title)
+        print("Destructor ran: Book removed ->", self.title)
 
 
-b1 = Book("Python Basics", "Guido")
-b2 = Book("Clean Code", "Robert")
-b1.display()
-b2.display()
-del b1
+b = Book("Python Basics")
+print("Using book:", b.title)
+
+del b  # Deletes the object and triggers __del__
 ```
 
 ---
 
-## 2. Modules, Packages, and Asyncio
+### 3.3 Modules, Namespaces, Reloading, `math`, `random`, `datetime`, `map`, `filter`, `reduce`
 
-### 3.3 Module Basic Usage, Namespaces, Reloading Modules (`math`, `random`, `datetime`, `map`, `filter`, `reduce`)
-
-- **Module**: A `.py` file containing reusable functions, classes, and variables.
-- **Namespace**: A separate space for names inside a module so two modules can have functions with the same name without clashing (e.g., `math.sqrt()`).
-- **Built-in Modules**:
-  - `math`: Mathematical functions like `math.sqrt()`, `math.pi`, `math.factorial()`.
-  - `random`: Random values like `random.randint(1, 6)` and `random.choice(list)`.
-  - `datetime`: Dates and times like `datetime.date.today()`.
-- **Functional Helpers**:
-  - `map(func, list)`: Applies `func` to every item and returns the results.
-  - `filter(func, list)`: Keeps only items where `func` returns `True`.
-  - `reduce(func, list)` (from `functools`): Combines all items into one final value.
-- **Reloading Modules**: Python caches a module after the first `import`. `importlib.reload(module)` forces Python to re-read the module from disk.
-
-**Example Program** (from `modules_packages_asyncio.py` and `my_module.py`):
+* **What is a Module?** A single `.py` file containing ready-made functions or variables that you can bring into your program using `import`.
+* **What is a Namespace?** A namespace is like a labeled box or folder of names so two things with the same name do not clash. For example, `math.pi` lives inside the `math` namespace.
+* **What is Reloading a Module?** If you import a module and later change its code while your Python program/session is still running, `import` alone will not re-read the file. `importlib.reload(module_name)` forces Python to reload it.
+* **Built-in modules (`math`, `random`, `datetime`):**
+  * `math`: Math functions like square root (`math.sqrt`) and floor/ceil.
+  * `random`: Generating random numbers or picking random items (`random.randint`, `random.choice`).
+  * `datetime`: Working with today's date and current time (`datetime.datetime.now()`).
+* **`map`, `filter`, `reduce`:**
+  * `map(func, list)`: Applies `func` to **every** item and gives back transformed items.
+  * `filter(func, list)`: Keeps **only** the items where `func` returns `True`.
+  * `reduce(func, list)` (from `functools`): Takes two items at a time and squashes the whole list down into **one** single result.
 
 ```python
+import datetime
+import functools
+import importlib
 import math
 import random
-import datetime as dt
-from functools import reduce
-import importlib
-import my_module
 
-print("Square root of 36:", math.sqrt(36))
-print("Dice roll:", random.randint(1, 6))
-print("Today's date:", dt.date.today())
+# math, random, datetime
+print("Sqrt of 49:", math.sqrt(49))
+print("Random number 1 to 10:", random.randint(1, 10))
+print("Now:", datetime.datetime.now())
 
-numbers = [1, 2, 3, 4, 5, 6]
+# Reloading a module
+math = importlib.reload(math)
 
-def square(n):
-    return n * n
+# map, filter, reduce with simple functions
+numbers = [2, 5, 8, 11]
 
-def is_even(n):
-    if n % 2 == 0:
-        return True
-    else:
-        return False
 
-def add(a, b):
-    return a + b
+def add_ten(x):
+    return x + 10
 
-print("map()   :", list(map(square, numbers)))
-print("filter():", list(filter(is_even, numbers)))
-print("reduce():", reduce(add, numbers))
 
-my_module.greet("Omkar")
-my_module.VERSION = "9.9-temp"
-importlib.reload(my_module)
-print("VERSION after reload:", my_module.VERSION)
+def is_even(x):
+    return x % 2 == 0
+
+
+def multiply(a, b):
+    return a * b
+
+
+plus_ten = list(map(add_ten, numbers))
+even_nums = list(filter(is_even, numbers))
+product_all = functools.reduce(multiply, numbers)
+
+print("map (+10):", plus_ten)
+print("filter (even):", even_nums)
+print("reduce (multiply all):", product_all)
 ```
 
-### 3.4 Package: Import Basics, Namespace Packages, User-Defined Modules and Packages, `asyncio`
+---
 
-- **Regular Package**: A folder containing Python modules and an `__init__.py` file. Imported using `import package.module` or `from package.module import name`.
-- **Namespace Package**: A folder containing Python modules **without** an `__init__.py` file (supported in Python 3.3+). Its `__file__` attribute is `None`.
-- **`asyncio`**: A built-in library for running tasks concurrently using `async def`, `await`, `asyncio.sleep()`, `asyncio.gather()`, and `asyncio.run()`. While one task waits (for example, `await asyncio.sleep(1)`), other tasks can run.
+### 3.4 Packages, Namespace Packages, User-Defined Modules & Packages, and `asyncio`
 
-**Example Program** (from `modules_packages_asyncio.py`):
+* **What is a Package?** A folder that groups related `.py` module files together. A regular package has an `__init__.py` file inside the folder.
+* **What is a Namespace Package?** A package folder **without** an `__init__.py` file. Python can combine folders with the same name across different locations into one package.
+* **User-Defined Module & Package:** You create your own `.py` file (a module) or your own folder of `.py` files (a package) and import functions from it into your main script.
+
+```text
+Assessment 2/
+├── modules_packages_asyncio.py
+├── calc_pkg/
+│   ├── __init__.py
+│   └── ops.py
+└── ns_pkg/
+    └── notes.py
+```
+
+`calc_pkg/ops.py`:
+
+```python
+def add(a, b):
+    return a + b
+```
+
+`modules_packages_asyncio.py`:
+
+```python
+from calc_pkg.ops import add
+
+print(add(4, 6))
+```
+
+* **What is `asyncio`?** A way to run waiting tasks (like network calls or timers) without freezing the whole program. You mark a function with `async def`, use `await` when waiting on an async task, and run it with `asyncio.run(...)`.
 
 ```python
 import asyncio
-import my_pkg.helpers
-from my_pkg.helpers import make_uppercase
-import ns_pkg.notes
 
-print("Sum from my_pkg.helpers:", my_pkg.helpers.add_numbers(10, 20))
-print("Uppercase:", make_uppercase("python"))
-print("Namespace package:", ns_pkg.notes.get_note())
-print("ns_pkg.__file__:", ns_pkg.__file__)
 
 async def download_file(file_name, seconds):
-    print("Started:", file_name)
-    await asyncio.sleep(seconds)
-    print("Finished:", file_name)
+    print("Downloading:", file_name)
+    await asyncio.sleep(seconds)  # Waits without blocking other async tasks
+    print("Done:", file_name)
 
-async def run_async_tasks():
-    await asyncio.gather(
-        download_file("Notes.pdf", 1),
-        download_file("Slides.pptx", 1),
-    )
-    print("All async downloads complete!")
 
-asyncio.run(run_async_tasks())
+async def main():
+    t1 = asyncio.create_task(download_file("notes.pdf", 1))
+    t2 = asyncio.create_task(download_file("slides.pptx", 1))
+    await t1
+    await t2
+
+
+asyncio.run(main())
 ```
 
 ---
 
-## 3. Exception Handling and Multithreading
+### 6.1 Exception Handling (`try`, `except`, `finally`, `raise`)
 
-### 6.1 Exception Handling: `try`, `except`, `finally`, `raise`
-
-- **`try`**: Wrap code that might cause a runtime error.
-- **`except`**: Catch and handle a specific error so the program does not crash.
-- **`finally`**: A block that **always** runs at the end, whether an error happened or not (useful for cleanup).
-- **`raise`**: Manually trigger an exception when a condition or rule is violated.
-
-**Example Program** (from `exceptions_and_threads.py`):
+* **What is an Exception?** An error that happens while a program is running (like dividing by zero or typing `"abc"` instead of a number).
+* **`try`:** Put risky code here.
+* **`except`:** Runs if an error happens in `try`, letting you print a friendly message instead of crashing.
+* **`finally`:** Always runs at the end—whether an error happened or not.
+* **`raise`:** You force an error to happen on purpose when a condition is wrong (for example, marks less than 0).
 
 ```python
-def divide_numbers(a, b):
-    try:
-        if b == 0:
-            raise ZeroDivisionError("Cannot divide by zero!")
-        answer = a / b
-        print("Result:", answer)
-    except ZeroDivisionError as err:
-        print("Error caught:", err)
-    except TypeError:
-        print("Error caught: Please enter numbers only.")
-    finally:
-        print("Finally block: Division attempt finished.\n")
+def check_marks(marks):
+    if marks < 0 or marks > 100:
+        raise ValueError("Marks must be between 0 and 100.")
+    print("Valid marks:", marks)
 
-divide_numbers(10, 2)
-divide_numbers(10, 0)
-divide_numbers(10, "a")
+
+try:
+    score = int("90")
+    check_marks(score)
+except ValueError as error:
+    print("Caught an error:", error)
+finally:
+    print("Finally block always runs.")
 ```
 
-### 6.2 Multithreading: Synchronizing Threads — `sleep()`, `join()`
+---
 
-- **Thread**: A lightweight unit of execution that lets a program run multiple tasks at the same time using the `threading` module.
-- **`time.sleep(seconds)`**: Pauses the current thread for the given number of seconds.
-- **`thread.join()`**: Tells the main program to wait until that thread finishes before continuing.
-- **Synchronization (`threading.Lock`)**: Ensures only one thread at a time modifies a shared variable, preventing race conditions.
+### 6.2 Multithreading (`sleep()` and `join()`)
 
-**Example Program** (from `exceptions_and_threads.py`):
+* **What is Multithreading?** Running more than one path of execution (thread) inside a program so tasks can take turns or overlap while waiting.
+* **`time.sleep(seconds)`:** Pauses the current thread for `seconds` seconds.
+* **`thread.join()`:** Makes the main program wait until that thread finishes before moving on.
 
 ```python
 import threading
 import time
 
-counter = 0
-lock = threading.Lock()
 
-def print_task(task_name):
-    for step in range(1, 4):
-        print(task_name, "- step", step)
-        time.sleep(0.3)
+def print_numbers(label):
+    for i in range(1, 4):
+        print(label, "->", i)
+        time.sleep(0.5)
 
-def add_to_counter(times):
-    global counter
-    for _ in range(times):
-        lock.acquire()
-        counter = counter + 1
-        lock.release()
 
-t1 = threading.Thread(target=print_task, args=("Thread-A",))
-t2 = threading.Thread(target=print_task, args=("Thread-B",))
+t1 = threading.Thread(target=print_numbers, args=("Thread 1",))
+t2 = threading.Thread(target=print_numbers, args=("Thread 2",))
+
 t1.start()
 t2.start()
-t1.join()
-t2.join()
 
-c1 = threading.Thread(target=add_to_counter, args=(1000,))
-c2 = threading.Thread(target=add_to_counter, args=(1000,))
-c1.start()
-c2.start()
-c1.join()
-c2.join()
-print("Final synchronized counter value:", counter)
+t1.join()  # Wait for Thread 1 to finish
+t2.join()  # Wait for Thread 2 to finish
+
+print("Both threads finished.")
 ```
