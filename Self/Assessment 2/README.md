@@ -1,33 +1,29 @@
-# Python Assessment 2 — Notes & Practical Programs
+# Python Practical Assessment 2 — Study Guide & Examples
 
-## Syllabus (Assessment 2)
+A beginner-friendly guide covering Object-Oriented Programming, Modules & Packages, Asyncio, Exception Handling, and Multithreading in Python.
 
-1. **Object Oriented Programming**
-   - **2.1** Concept of class, object, method call, accessing class members outside the class
-   - **2.2** Setter and Getter methods
-   - **2.3** Constructor and destructors
+---
+
+## Syllabus
+
+1. **Object-Oriented Programming (OOP)**
+   * **2.1** Concept of class, object, method call, accessing class members outside the class
+   * **2.2** Setter and Getter methods
+   * **2.3** Constructor and destructors
 2. **Modules, Packages, and Asyncio**
-   - **3.3** Module basic usage, namespaces, reloading modules — `math`, `random`, `datetime`, `map`, `filter`, `reduce`
-   - **3.4** Package: import basics, namespace packages, user defined modules and packages, `asyncio`
+   * **3.3** Module basic usage, namespaces, reloading modules — `math`, `random`, `datetime`, `map`, `filter`, `reduce`
+   * **3.4** Package: import basics, namespace packages, user-defined modules and packages, `asyncio`
 3. **Exception Handling and Multithreading**
-   - **6.1** Exception Handling: `try`, `except`, `finally`, `raise`
-   - **6.2** Multithreading: synchronizing the threads — `sleep()`, `join()`
+   * **6.1** Exception Handling: `try`, `except`, `finally`, `raise`
+   * **6.2** Multithreading: synchronizing the threads — `sleep()`, `join()`
 
 ---
 
-## Program Files
-
-- [`oop_programs.py`](oop_programs.py) — Section 1 (Topics 2.1, 2.2, 2.3)
-- [`modules_packages_asyncio.py`](modules_packages_asyncio.py) — Section 2 (Topics 3.3, 3.4)
-- [`calc_pkg/`](calc_pkg/) — User-defined regular package (`__init__.py` + `ops.py`)
-- [`ns_pkg/`](ns_pkg/) — User-defined namespace package (without `__init__.py`)
-- [`exceptions_and_threads.py`](exceptions_and_threads.py) — Section 3 (Topics 6.1, 6.2)
-
----
+## 1. Object-Oriented Programming (OOP)
 
 ### 2.1 Class, Object, Method Call, and Accessing Class Members
 
-* **What is a Class?** Think of a class like a cookie cutter or a form template. If you make a `Student` class, it just says: "Every student has a `name` and `marks`." It does not hold one real student's data by itself.
+* **What is a Class?** Think of a class like a cookie cutter or a form template. If you make a `Student` class, it just says: *"Every student has a name and marks."* It does not hold one real student's data by itself.
 * **What is an Object?** An object is one real item made from that template. For example, `s1 = Student("Riya", 85)` creates an actual student object named `s1`.
 * **What is a Method Call?** A method is just a function written inside a class. Calling a method means asking that specific object to do something using a dot, like `s1.show_details()`.
 * **How do you access class members outside the class?** Once you have an object `obj` (or the class name `Student`), you use a dot `.` to read or change variables or call methods outside the class—for example, `s1.name` or `Student.college`.
@@ -113,6 +109,8 @@ del b  # Deletes the object and triggers __del__
 
 ---
 
+## 2. Modules, Packages, and Asyncio
+
 ### 3.3 Modules, Namespaces, Reloading, `math`, `random`, `datetime`, `map`, `filter`, `reduce`
 
 * **What is a Module?** A single `.py` file containing ready-made functions or variables that you can bring into your program using `import`.
@@ -176,24 +174,20 @@ print("reduce (multiply all):", product_all)
 * **User-Defined Module & Package:** You create your own `.py` file (a module) or your own folder of `.py` files (a package) and import functions from it into your main script.
 
 ```text
-Assessment 2/
-├── modules_packages_asyncio.py
-├── calc_pkg/
-│   ├── __init__.py
-│   └── ops.py
-└── ns_pkg/
-    └── notes.py
+project/
+├── app.py
+└── calc_pkg/
+    ├── __init__.py
+    └── ops.py
 ```
 
 `calc_pkg/ops.py`:
-
 ```python
 def add(a, b):
     return a + b
 ```
 
-`modules_packages_asyncio.py`:
-
+`app.py`:
 ```python
 from calc_pkg.ops import add
 
@@ -224,13 +218,15 @@ asyncio.run(main())
 
 ---
 
+## 3. Exception Handling and Multithreading
+
 ### 6.1 Exception Handling (`try`, `except`, `finally`, `raise`)
 
 * **What is an Exception?** An error that happens while a program is running (like dividing by zero or typing `"abc"` instead of a number).
 * **`try`:** Put risky code here.
 * **`except`:** Runs if an error happens in `try`, letting you print a friendly message instead of crashing.
 * **`finally`:** Always runs at the end—whether an error happened or not.
-* **`raise`:** You force an error to happen on purpose when a condition is wrong (for example, marks less than 0).
+* **`raise`:** You force an error to happen on purpose when a condition is wrong (for example, age less than 0).
 
 ```python
 def check_marks(marks):
