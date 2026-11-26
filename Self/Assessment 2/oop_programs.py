@@ -1,133 +1,85 @@
 # Section 1: Object Oriented Programming (2.1, 2.2, 2.3)
-# Study and revision examples with clear comments for beginners.
 
 # ---------------------------------------------------------
-# 2.1 Concept of Class, Object, Method Call, and Accessing
-#     Class Members Outside the Class
+# 2.1 Class, Object, Method Call, and Accessing Class Members
 # ---------------------------------------------------------
-# - Class: A blueprint for creating objects.
-# - Object: An actual instance created from a class.
-# - Method: A function written inside a class.
-# - Accessing members outside class: Using object.attribute or object.method()
+# Class: A blueprint or form template.
+# Object: One real item made from that template.
+# Method Call: Calling a function inside a class using a dot (e.g., s1.show_details()).
+# Accessing members outside class: Using object.attribute or ClassName.attribute.
 
 class Student:
-    # Class attribute (shared by all Student objects)
-    college = "IMCC"
+    college = "My College"  # Shared by all Student objects
 
-    def set_info(self, name, roll_no, marks):
-        # Instance attributes (different for each object)
-        self.name = name
-        self.roll_no = roll_no
-        self.marks = marks
+    def __init__(self, name, marks):
+        self.name = name    # Stored inside this specific object
+        self.marks = marks  # Stored inside this specific object
 
-    def show_info(self):
-        print("College :", Student.college)
-        print("Name    :", self.name)
-        print("Roll No :", self.roll_no)
-        print("Marks   :", self.marks)
-
-    def check_pass(self):
-        if self.marks >= 40:
-            print(self.name, "-> Pass")
-        else:
-            print(self.name, "-> Fail")
+    def show_details(self):
+        print("Name:", self.name)
+        print("Marks:", self.marks)
 
 
 print("=== 2.1 Class, Object, Method Call ===")
-s1 = Student()  # Creating first object
-s2 = Student()  # Creating second object
+# Create one object from the Student class
+s1 = Student("Riya", 85)
 
-# Calling methods on objects
-s1.set_info("Aarav", 101, 75)
-s2.set_info("Diya", 102, 32)
+# Access a variable outside the class using a dot
+print("Outside access - Name:", s1.name)
+print("Outside access - College:", Student.college)
 
-s1.show_info()
-s1.check_pass()
-
-print()
-s2.show_info()
-s2.check_pass()
-
-# Accessing and updating class members from outside the class
-print("\nCollege accessed outside class:", Student.college)
-print("Student 1 name accessed directly:", s1.name)
-
-s2.marks = 50  # Updating marks from outside the class
-print("Updated Diya's marks to:", s2.marks)
-s2.check_pass()
+# Call a method on the object
+s1.show_details()
 
 
 # ---------------------------------------------------------
 # 2.2 Setter and Getter Methods
 # ---------------------------------------------------------
-# - Getter: Method used to read a value safely.
-# - Setter: Method used to change a value with checks/validation.
+# Getter: Reads and returns a variable's value.
+# Setter: Updates a variable's value after checking an if/else condition.
 
-class BankAccount:
-    def __init__(self, owner, balance):
-        self.owner = owner
-        self._balance = 0  # Underscore means treat as internal/private
-        self.set_balance(balance)
+class Person:
+    def __init__(self, age):
+        self._age = 0       # Start with a safe default
+        self.set_age(age)   # Validate using the setter
 
-    # Getter method
-    def get_balance(self):
-        return self._balance
+    def get_age(self):
+        return self._age    # Returns the stored age
 
-    # Setter method with validation
-    def set_balance(self, amount):
-        if amount < 0:
-            print("Invalid amount! Balance cannot be negative.")
+    def set_age(self, new_age):
+        if new_age >= 0:
+            self._age = new_age
+            print("Age set to:", self._age)
         else:
-            self._balance = amount
-
-    def deposit(self, amount):
-        if amount > 0:
-            self.set_balance(self._balance + amount)
-            print("Deposited:", amount)
-        else:
-            print("Deposit must be greater than 0.")
+            print("Age cannot be negative. Keeping:", self._age)
 
 
 print("\n=== 2.2 Setter and Getter Methods ===")
-acc = BankAccount("Rohan", 1000)
-print("Owner:", acc.owner)
-print("Starting Balance:", acc.get_balance())
+p = Person(20)
+print("Current age:", p.get_age())
 
-acc.deposit(500)
-print("Balance after deposit:", acc.get_balance())
-
-# Trying to set a negative balance (setter will block it)
-acc.set_balance(-200)
-print("Balance after invalid update:", acc.get_balance())
+p.set_age(-5)   # Blocked by if/else
+p.set_age(21)   # Accepted
+print("Final age:", p.get_age())
 
 
 # ---------------------------------------------------------
 # 2.3 Constructor and Destructor
 # ---------------------------------------------------------
-# - Constructor (__init__): Runs automatically when an object is created.
-# - Destructor (__del__): Runs automatically when an object is deleted
-#   or when the program finishes.
+# Constructor (__init__): Runs automatically when you create an object.
+# Destructor (__del__): Runs automatically when an object is deleted with del.
 
 class Book:
-    def __init__(self, title, author):
+    def __init__(self, title):
         self.title = title
-        self.author = author
-        print("Constructor called -> Created book:", self.title)
-
-    def display(self):
-        print("Book:", self.title, "| Author:", self.author)
+        print("Constructor ran: Book created ->", self.title)
 
     def __del__(self):
-        print("Destructor called -> Removed book:", self.title)
+        print("Destructor ran: Book removed ->", self.title)
 
 
 print("\n=== 2.3 Constructor and Destructor ===")
-b1 = Book("Python Basics", "Guido")
-b2 = Book("Clean Code", "Robert")
+b = Book("Python Basics")
+print("Using book:", b.title)
 
-b1.display()
-b2.display()
-
-# Deleting b1 manually triggers its destructor immediately
-del b1
-print("End of OOP script (b2 will be destroyed automatically now).")
+del b  # Deletes the object and triggers __del__
