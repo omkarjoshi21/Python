@@ -1,0 +1,13 @@
+def calculate(marks):
+    if marks>=95:
+        return "A+"
+    elif marks>=85:
+        return "A"
+    elif marks>=75:
+        return "B"
+    elif marks>=55:
+        return "C"
+    elif marks>=45:
+        return "D"
+    elif marks>=35:
+        return "Fail"
